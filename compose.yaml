@@ -1,9 +1,21 @@
 services:
+  spring-app:
+    build: .
+    ports:
+      - "3003:3003"  # host:container
+    container_name: springboot-app
+    restart: unless-stopped
+  garage-sim:
+      image: cfontes0estapar/garage-sim:1.0.0
+      network_mode: "host"
+      restart: unless-stopped
+      container_name: garage-sim
+
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=gestacar'
+      - 'POSTGRES_PASSWORD=s3cr3t'
+      - 'POSTGRES_USER=gestacaruser'
     ports:
       - '5432'
