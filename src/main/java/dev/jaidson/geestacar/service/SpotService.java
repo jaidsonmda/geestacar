@@ -2,7 +2,6 @@ package dev.jaidson.geestacar.service;
 
 import dev.jaidson.geestacar.domain.Spot;
 import dev.jaidson.geestacar.repository.SpotRepository;
-import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
