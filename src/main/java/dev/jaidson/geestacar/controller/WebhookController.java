@@ -34,13 +34,13 @@ public class WebhookController {
             default -> System.out.println("Tipo de evento desconhecido: " + event.eventType);
         }
 
-        return ResponseEntity.ok("Webhook recebido com sucesso.");
+        return ResponseEntity.ok("Evento recebido com sucesso.");
     }
 
     private void saveNewCar(EventDTO event) {
         Optional<Car> carOp = carService.findByLicensePlate(event.licensePlate);
         if(!carOp.isPresent()){
-                carService.save(Car.builder().make("Citröen").model("C3 AIRCROSS7").color("Red Ruby").inTheGarage(true).licensePlate(event.licensePlate).build());
+                carService.save(Car.builder().make("Citröen").model("C3 AIRCROSS7").color("Ruby").inTheGarage(true).licensePlate(event.licensePlate).build());
             System.out.println("Car criado com sucesso!");
         }else{
             Car car = carOp.get();
