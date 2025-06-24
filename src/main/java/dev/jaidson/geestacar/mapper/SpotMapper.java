@@ -10,7 +10,6 @@ public class SpotMapper {
 
     public static Spot toDomain(SpotDTO dto) {
         return Spot.builder()
-                .id(dto.getId())
                 .sector(dto.getSector())
                 .lat(dto.getLat())
                 .lng(dto.getLng())

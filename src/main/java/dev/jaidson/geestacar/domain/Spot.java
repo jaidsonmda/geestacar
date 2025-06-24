@@ -1,9 +1,7 @@
 package dev.jaidson.geestacar.domain;
 
 import dev.jaidson.geestacar.enums.Sector;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class Spot {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Sector sector;
     private double lat;

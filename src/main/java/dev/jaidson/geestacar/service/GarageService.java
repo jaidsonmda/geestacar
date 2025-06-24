@@ -2,6 +2,7 @@ package dev.jaidson.geestacar.service;
 
 import dev.jaidson.geestacar.domain.Garage;
 import dev.jaidson.geestacar.repository.GarageRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -21,9 +22,13 @@ public class GarageService {
     public Optional<Garage> findById(Long id) {
         return garageRepository.findById(id);
     }
-
+    @Transactional
     public Garage save(Garage garage) {
+
         return garageRepository.save(garage);
+    }
+    public void saveAll(List<Garage> garages) {
+        garageRepository.saveAll(garages);
     }
 
     public void deleteById(Long id) {
