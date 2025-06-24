@@ -27,10 +27,12 @@ public class GarageService {
 
         return garageRepository.save(garage);
     }
+    @Transactional
     public void saveAll(List<Garage> garages) {
         garageRepository.saveAll(garages);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         garageRepository.deleteById(id);
     }

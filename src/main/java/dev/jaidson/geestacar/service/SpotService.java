@@ -26,6 +26,9 @@ public class SpotService {
     public Spot findByLatAndLng(double lat, double lng) {
         return spotRepository.findSpotByLatAndLng(lat, lng);
     }
+    public int countAllSpots() {
+        return Math.toIntExact(spotRepository.count());
+    }
     @Transactional
     public Spot save(Spot spot) {
 

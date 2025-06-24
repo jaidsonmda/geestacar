@@ -25,5 +25,5 @@ public class Spot {
     private double lng;
     private boolean occupied = false;
     @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EventRegister> eventRegister;
+    private List<RegisterEvent> eventRegister;
 }
