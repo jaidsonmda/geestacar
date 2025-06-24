@@ -1,9 +1,11 @@
 package dev.jaidson.geestacar.controller;
 
 import dev.jaidson.geestacar.domain.Car;
+import dev.jaidson.geestacar.domain.Spot;
 import dev.jaidson.geestacar.dto.EventDTO;
 import dev.jaidson.geestacar.enums.EventType;
 import dev.jaidson.geestacar.service.CarService;
+import dev.jaidson.geestacar.service.SpotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,27 +23,32 @@ import static dev.jaidson.geestacar.enums.EventType.EXIT;
 public class WebhookController {
     @Autowired
     private CarService carService;
+    @Autowired
+    private SpotService spotService;
     @PostMapping
     public ResponseEntity<String> receberEvento(@RequestBody EventDTO event) {
-        System.out.println("Evento Recebido:");
-        System.out.println("Placa : " + event.licensePlate);
-        System.out.println("Tipo de Evento: " + event.eventType);
+
         saveNewCar(event);
         switch (event.eventType) {
-            case ENTRY -> entry(event.eventType);
-            case EXIT -> exit(event.eventType);
-            case PARKED -> parked(event.eventType);
+            case ENTRY -> entry(event);
+            case EXIT -> exit(event);
+            case PARKED -> parked(event);
             default -> System.out.println("Tipo de evento desconhecido: " + event.eventType);
         }
 
-        return ResponseEntity.ok("Evento recebido com sucesso.");
-    }
+
+        return ResponseEntity.ok("Evento recebido com sucesso.");}
 
     private void saveNewCar(EventDTO event) {
         Optional<Car> carOp = carService.findByLicensePlate(event.licensePlate);
         if(!carOp.isPresent()){
-                carService.save(Car.builder().make("Citröen").model("C3 AIRCROSS7").color("Ruby").inTheGarage(true).licensePlate(event.licensePlate).build());
-            System.out.println("Car criado com sucesso!");
+                carService.save(Car.builder()
+                        .make("Citröen")
+                        .model("C3 AIRCROSS7")
+                        .color("Ruby")
+                        .inTheGarage(true)
+                        .licensePlate(event.licensePlate).build());
+            System.out.println("Carro criado com sucesso!");
         }else{
             Car car = carOp.get();
             if(EXIT == event.eventType ){
@@ -55,15 +62,23 @@ public class WebhookController {
        }
     }
 
-    private void entry(EventType eventType) {
-        System.out.println("Carro entrou na garagem!");
+    private ResponseEntity entry(EventDTO event) {
+        int spotUnoccupied = spotService.findSpotUnoccupied();
+        if(spotUnoccupied==0) return ResponseEntity.status(409).build();
+        return ResponseEntity.status(409).build();// ResponseEntity.ok("Evento recebido com sucesso.");
+
     }
 
-    private void exit(EventType eventType) {
+    private ResponseEntity exit(EventDTO event) {
         System.out.println("Carro saiu da garagem!");
+        return ResponseEntity.ok("Evento recebido com sucesso.");
     }
 
-    private void parked(EventType eventType) {
+    private ResponseEntity parked(EventDTO event) {
         System.out.println("Carro estacionou!");
+        Spot spot = spotService.findByLatAndLng(event.lat, event.lng);
+        spot.setOccupied(true);
+        spotService.save(spot);
+        return ResponseEntity.ok("Evento recebido com sucesso.");
     }
 }

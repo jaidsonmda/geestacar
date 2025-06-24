@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "spot")
 @Data
@@ -22,4 +24,6 @@ public class Spot {
     private double lat;
     private double lng;
     private boolean occupied = false;
+    @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventRegister> eventRegister;
 }

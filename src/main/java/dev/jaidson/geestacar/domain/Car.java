@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "car")
 @Data
@@ -23,4 +25,6 @@ public class Car {
     public int year;
     public String make;
     private boolean inTheGarage;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventRegister> eventRegister;
 }

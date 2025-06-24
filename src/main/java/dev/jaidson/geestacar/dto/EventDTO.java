@@ -13,6 +13,6 @@ public class EventDTO {
     @JsonProperty("exit_time")
     public String exitTime;
 
-    public String lat;
-    public String lng;
+    public Double lat;
+    public Double lng;
 }

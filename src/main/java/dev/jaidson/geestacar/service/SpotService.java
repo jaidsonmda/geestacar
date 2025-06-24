@@ -20,6 +20,12 @@ public class SpotService {
     public Optional<Spot> findById(Long id) {
         return spotRepository.findById(id);
     }
+    public int findSpotUnoccupied(){
+        return spotRepository.countAllByOccupiedFalse();
+    }
+    public Spot findByLatAndLng(double lat, double lng) {
+        return spotRepository.findSpotByLatAndLng(lat, lng);
+    }
     @Transactional
     public Spot save(Spot spot) {
 
@@ -27,6 +33,9 @@ public class SpotService {
 
 
 
+    }
+    public Spot findOneOccupiedFalse() {
+      return  spotRepository.findOneByOccupiedFalse();
     }
     @Transactional
     public void saveAll(List<Spot> spots) {
