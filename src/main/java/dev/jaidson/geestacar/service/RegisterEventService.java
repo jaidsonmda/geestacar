@@ -1,5 +1,6 @@
 package dev.jaidson.geestacar.service;
 
+import dev.jaidson.geestacar.domain.Car;
 import dev.jaidson.geestacar.domain.RegisterEvent;
 import dev.jaidson.geestacar.repository.RegisterEventRepository;
 import org.springframework.stereotype.Service;
@@ -29,4 +30,11 @@ public class RegisterEventService {
         registerEventRepository.deleteById(id);
     }
 
+    public Optional<RegisterEvent> findRegisterByCar(Car car) {
+        List<RegisterEvent> byCarOrderByIdDesc = registerEventRepository.findByCarOrderByIdDesc(car);
+        if (!byCarOrderByIdDesc.isEmpty()) {
+            return Optional.of(byCarOrderByIdDesc.get(0));
+        }
+        return Optional.empty();
+    }
 }

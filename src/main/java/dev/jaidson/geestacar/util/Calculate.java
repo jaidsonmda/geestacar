@@ -11,16 +11,16 @@ public class Calculate {
         return baseprice+(percentage * baseprice);
     }
     public static double priceExit(double percentagen, double baseprice) {
-        if(percentagen <=0.25){
+        if(percentagen <=25){
             return priceReduction(baseprice, 0.1);
         }
-        if(percentagen <=0.5){
+        if(percentagen <=50){
             return baseprice;
         }
-        if(percentagen <=0.75){
+        if(percentagen <=75){
             return priceIncrease(baseprice, 0.1);
         }
-        if (percentagen <=1){
+        if (percentagen <=100){
             return priceIncrease(baseprice, 0.25);
         }
         return baseprice;

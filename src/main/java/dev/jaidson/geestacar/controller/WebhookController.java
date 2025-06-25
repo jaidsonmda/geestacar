@@ -43,7 +43,8 @@ public class WebhookController {
         }
 
 
-        return ResponseEntity.ok("Evento recebido com sucesso.");}
+        return ResponseEntity.ok("Evento recebido com sucesso.");
+    }
 
     private Car saveNewCar(EventDTO event) {
         Optional<Car> carOp = carService.findByLicensePlate(event.licensePlate);
@@ -75,14 +76,20 @@ public class WebhookController {
         int spotUnoccupied = spotService.findSpotUnoccupied();
 
         if(spotUnoccupied==0) {
+            car.setInTheGarage(false);
+            carService.save(car);
+            System.out.println("Carro não entrou da garagem!");
             return ResponseEntity.status(409).build();
+
+        }else {
+            registerEventService
+                    .save(RegisterEvent
+                            .builder()
+                            .eventType(event.eventType)
+                            .car(car)
+                            .entryTime(LocalDate.now()).build());
+            System.out.println("Carro entrou da garagem! existem :"+spotUnoccupied+" vagas disponíveis");
         }
-        registerEventService
-                .save(RegisterEvent
-                        .builder()
-                        .eventType(event.eventType)
-                        .car(car)
-                        .entryTime(LocalDate.now()).build());
        return  ResponseEntity.ok("Evento recebido com sucesso.");
 
     }
@@ -91,6 +98,15 @@ public class WebhookController {
         System.out.println("Carro saiu da garagem!");
 
         double perc= Calculate.percentage(spotService.findSpotUnoccupied(), spotService.countAllSpots());
+        car.setInTheGarage(false);
+        Optional<RegisterEvent> registerByCar = registerEventService.findRegisterByCar(car);
+       if( registerByCar.isPresent() && !registerByCar.isEmpty()){
+           Spot spot =registerByCar.get().getSpot();
+           spotService.save(spot);
+       }
+        carService.save(car);
+        System.out.println(perc);
+        System.out.println(Calculate.priceExit(perc, 20.00));
                  registerEventService
                 .save(RegisterEvent
                         .builder()
@@ -103,15 +119,23 @@ public class WebhookController {
 
     private ResponseEntity parked(EventDTO event, Car car) {
         System.out.println("Carro estacionou!");
-        Spot spot = spotService.findByLatAndLng(event.lat, event.lng);
-        spot.setOccupied(true);
-        spotService.save(spot);
-        registerEventService
-                .save(RegisterEvent
-                        .builder()
-                        .eventType(event.eventType)
-                        .car(car)
-                        .entryTime(LocalDate.now()).build());
-        return ResponseEntity.ok("Evento recebido com sucesso.");
+        int spotUnoccupied = spotService.findSpotUnoccupied();
+
+        if(spotUnoccupied==0) {
+            System.out.println("Carro não entrou da garagem!");
+            return ResponseEntity.status(409).build();
+
+        }else {
+            Spot spot = spotService.findByLatAndLng(event.lat, event.lng);
+            spot.setOccupied(true);
+            spotService.save(spot);
+            registerEventService
+                    .save(RegisterEvent
+                            .builder()
+                            .eventType(event.eventType)
+                            .car(car)
+                            .entryTime(LocalDate.now()).build());
+            return ResponseEntity.ok("Evento recebido com sucesso.");
+        }
     }
 }
