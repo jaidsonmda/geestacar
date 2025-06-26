@@ -21,6 +21,7 @@ public class RegisterEvent {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
     private Long id;
 
+    public String licensePlate;
     public LocalDate entryTime;
 
     public EventType eventType;

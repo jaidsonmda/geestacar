@@ -30,11 +30,10 @@ public class RegisterEventService {
         registerEventRepository.deleteById(id);
     }
 
-    public Optional<RegisterEvent> findRegisterByCar(Car car) {
-        List<RegisterEvent> byCarOrderByIdDesc = registerEventRepository.findByCarOrderByIdDesc(car);
-        if (!byCarOrderByIdDesc.isEmpty()) {
-            return Optional.of(byCarOrderByIdDesc.get(0));
-        }
-        return Optional.empty();
+    public Optional<RegisterEvent> findRegisterByCarAndExitTimeNull() {
+       return registerEventRepository.findFirstBySpotNotNullAndAndExitTimeIsNull();
+
     }
+
+
 }

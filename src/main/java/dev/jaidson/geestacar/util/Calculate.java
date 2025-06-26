@@ -2,7 +2,7 @@ package dev.jaidson.geestacar.util;
 
 public class Calculate {
     public static double percentage(int spotUnoccupied, int totalSpot) {
-        return (float) (spotUnoccupied * 100 / totalSpot);
+        return (float) ((spotUnoccupied * 100) / totalSpot);
     }
     public static double priceReduction(double baseprice, double percentage) {
         return baseprice-(baseprice * percentage);

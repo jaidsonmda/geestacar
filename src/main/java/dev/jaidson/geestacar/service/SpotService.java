@@ -23,6 +23,9 @@ public class SpotService {
     public int findSpotUnoccupied(){
         return spotRepository.countAllByOccupiedFalse();
     }
+    public int findSpotOccupied(){
+        return spotRepository.countAllByOccupiedTrue();
+    }
     public Spot findByLatAndLng(double lat, double lng) {
         return spotRepository.findSpotByLatAndLng(lat, lng);
     }

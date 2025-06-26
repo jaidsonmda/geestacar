@@ -5,8 +5,9 @@ import dev.jaidson.geestacar.domain.RegisterEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RegisterEventRepository  extends JpaRepository<RegisterEvent, Long> {
-    List<RegisterEvent> findByCarOrderByIdDesc(Car car);
+    Optional<RegisterEvent> findFirstBySpotNotNullAndAndExitTimeIsNull();
 
 }

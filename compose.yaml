@@ -10,7 +10,13 @@ services:
     network_mode: "host"
     restart: unless-stopped
     container_name: garage-sim
-
+  garage-sim2:
+    ports:
+      - "3001:3001"
+    image: cfontes0estapar/garage-sim:1.0.0
+    network_mode: "host"
+    restart: unless-stopped
+    container_name: garage-sim2
   postgres:
     image: 'postgres:latest'
     environment:
