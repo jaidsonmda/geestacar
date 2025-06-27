@@ -2,17 +2,20 @@ package dev.jaidson.geestacar.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.jaidson.geestacar.enums.EventType;
+import lombok.Data;
 
+@Data
 public class EventDTO {
     @JsonProperty("license_plate")
-    public String licensePlate;
+    private String licensePlate;
     @JsonProperty("entry_time")
-    public String entryTime;
+    private String entryTime;
     @JsonProperty("event_type")
-    public EventType eventType;
+    private EventType eventType;
     @JsonProperty("exit_time")
-    public String exitTime;
+    private String exitTime;
 
-    public Double lat;
-    public Double lng;
+
+    private Double lat;
+    private Double lng;
 }

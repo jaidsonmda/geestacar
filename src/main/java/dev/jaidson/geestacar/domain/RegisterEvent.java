@@ -21,18 +21,14 @@ public class RegisterEvent {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
     private Long id;
 
-    public String licensePlate;
-    public LocalDate entryTime;
 
-    public EventType eventType;
-
-    public LocalDate exitTime;
-
-    public Double priceExit;
     @ManyToOne
-    @JoinColumn(name = "car_id")
-    public Car car;
+    @JoinColumn(name = "car_id", nullable = false)
+    private Car car;
     @ManyToOne
     @JoinColumn(name = "spot_id", nullable = true)
-    public Spot spot;
+    private Spot spot;
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
 }

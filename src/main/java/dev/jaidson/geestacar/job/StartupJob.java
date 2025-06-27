@@ -31,9 +31,9 @@ public class StartupJob {
                 .retrieve()
                 .bodyToMono(DataGarageDTO.class)
                 .block();
-        saveGarage(dataGarageDTO.garage);
-        saveSpots(dataGarageDTO.spots);
-        System.out.println("Dados de Garage: " + dataGarageDTO.spots);
+        saveGarage(dataGarageDTO.getGarage());
+        saveSpots(dataGarageDTO.getSpots());
+        System.out.println("Dados de Garage: " + dataGarageDTO.getSpots());
     }
     private void saveGarage(List<GarageDTO> garages) {
        garageService.saveAll(GarageMapper.toDomainList(garages));

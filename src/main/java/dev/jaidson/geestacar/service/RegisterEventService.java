@@ -34,6 +34,10 @@ public class RegisterEventService {
        return registerEventRepository.findFirstBySpotNotNullAndAndExitTimeIsNull();
 
     }
+    public List<RegisterEvent> findByLicensePlateAndExitTimeIsNull(String licensePlate) {
+        return registerEventRepository.findByLicensePlateAndExitTimeIsNull(licensePlate);
+
+    }
 
 
 }

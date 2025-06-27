@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface RegisterEventRepository  extends JpaRepository<RegisterEvent, Long> {
     Optional<RegisterEvent> findFirstBySpotNotNullAndAndExitTimeIsNull();
-
+    List<RegisterEvent> findByLicensePlateAndExitTimeIsNull(String licensePlate);
 }

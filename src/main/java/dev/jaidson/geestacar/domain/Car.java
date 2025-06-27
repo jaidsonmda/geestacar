@@ -19,11 +19,11 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    public String licensePlate;
-    public String model;
-    public String color;
-    public int year;
-    public String make;
+    private String licensePlate;
+    private String model;
+    private String color;
+    private int year;
+    private String make;
     private boolean inTheGarage;
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RegisterEvent> eventRegister;

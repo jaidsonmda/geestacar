@@ -1,9 +1,11 @@
 package dev.jaidson.geestacar.controller;
 
 import dev.jaidson.geestacar.domain.Car;
+import dev.jaidson.geestacar.domain.Event;
 import dev.jaidson.geestacar.domain.RegisterEvent;
 import dev.jaidson.geestacar.domain.Spot;
 import dev.jaidson.geestacar.dto.EventDTO;
+import dev.jaidson.geestacar.mapper.EventMapper;
 import dev.jaidson.geestacar.service.CarService;
 import dev.jaidson.geestacar.service.RegisterEventService;
 import dev.jaidson.geestacar.service.SpotService;
@@ -35,11 +37,11 @@ public class WebhookController {
 
 
         Car car = saveNewCar(event);
-        switch (event.eventType) {
+        switch (event.getEventType()) {
             case ENTRY -> entry(event, car);
             case EXIT -> exit(event, car);
             case PARKED -> parked(event, car);
-            default -> System.out.println("Tipo de evento desconhecido: " + event.eventType);
+            default -> System.out.println("Tipo de evento desconhecido: " + event.getEventType());
         }
 
 
@@ -47,23 +49,23 @@ public class WebhookController {
     }
 
     private Car saveNewCar(EventDTO event) {
-        Optional<Car> carOp = carService.findByLicensePlate(event.licensePlate);
+        Optional<Car> carOp = carService.findByLicensePlate(event.getLicensePlate());
         if(!carOp.isPresent()){
             Car save = carService.save(Car.builder()
                     .make("Citröen")
                     .model("C3 AIRCROSS7")
                     .color("Ruby")
                     .inTheGarage(true)
-                    .licensePlate(event.licensePlate).build());
+                    .licensePlate(event.getLicensePlate()).build());
 
             System.out.println("Carro criado com sucesso!");
             return  save;
         }else{
             Car car = carOp.get();
-            if(EXIT == event.eventType ){
+            if(EXIT == event.getEventType() ){
                car.setInTheGarage(false);
            }
-           if(ENTRY == event.eventType ){
+           if(ENTRY == event.getEventType() ){
                car.setInTheGarage(true);
            }
             Car save = carService.save(car);
@@ -78,14 +80,17 @@ public class WebhookController {
         if(spotUnoccupied==0) {
             car.setInTheGarage(false);
             carService.save(car);
-            System.out.println("Carro não entrou da garagem!");
+            System.out.println("Carro não entrou na garagem!");
             return ResponseEntity.status(409).build();
 
         }else {
+            Event domain = EventMapper.toDomain(event);
+            domain.setEntryTime(LocalDate.now());
             registerEventService
                     .save(RegisterEvent
                             .builder()
-                            .eventType(event.eventType)
+                            .event()
+                            .licensePlate(car.getLicensePlate())
                             .car(car)
                             .entryTime(LocalDate.now()).build());
             System.out.println("Carro entrou da garagem! existem :"+spotUnoccupied+" vagas disponíveis");
@@ -95,39 +100,45 @@ public class WebhookController {
     }
 
     private ResponseEntity exit(EventDTO event, Car car) {
-        Optional<RegisterEvent> registerEvent = registerEventService.findRegisterByCarAndExitTimeNull();
-        if(registerEvent.isPresent()) {
+        List<RegisterEvent> registerEventList = registerEventService.findByLicensePlateAndExitTimeIsNull(event.getLicensePlate());
+        if(!registerEventList.isEmpty()) {
             System.out.println("Carro saiu da garagem!");
 
             double perc = Calculate.percentage(spotService.findSpotOccupied(), spotService.countAllSpots());
-            car.setInTheGarage(false);
-            proccessExit(car,registerEvent.get());
 
-            carService.save(car);
+            proccessExit(car,registerEventList);
+
+            Event domain = EventMapper.toDomain(event);
+            domain.setPriceUntilNow(Calculate.priceExit(perc, 20.00));
+
             System.out.println(perc);
-            System.out.println(Calculate.priceExit(perc, 20.00));
+            System.out.println();
             registerEventService
                     .save(RegisterEvent
                             .builder()
-                            .eventType(event.eventType)
+                            .event(domain)
                             .car(car)
-                            .priceExit(Calculate.priceExit(perc, 20.00))
-                            .exitTime(LocalDate.now()).build());
+                            .build());
             return ResponseEntity.ok("Evento recebido com sucesso.");
         }
-        System.out.println("Sem evento de entrada para o carro "+car.licensePlate+"!");
+        System.out.println("Sem evento de entrada para o carro "+car.getLicensePlate()+"!");
         return ResponseEntity.status(409).build();
     }
 
-    private void proccessExit(Car car, RegisterEvent registerEvent) {
-
-                    if( registerEvent.eventType==PARKED ){
-                        Spot spot =registerEvent.getSpot();
-                        spot.setOccupied(false);
-                        spotService.save(spot);
-                    }
-                    registerEvent.setExitTime(LocalDate.now());
-                    registerEventService.save(registerEvent);
+    private void proccessExit(Car car,List<RegisterEvent> registerEventList) {
+                registerEventList.forEach(
+                        registerEvent -> {
+                            if( registerEvent.getEvent().getEventType()==PARKED ){
+                                Spot spot =registerEvent.getSpot();
+                                spot.setOccupied(false);
+                                spotService.save(spot);
+                            }
+                            registerEvent.getEvent().setExitTime(LocalDate.now());
+                            registerEventService.save(registerEvent);
+                        }
+                );
+        car.setInTheGarage(false);
+        carService.save(car);
 
 
     }
@@ -135,20 +146,22 @@ public class WebhookController {
     private ResponseEntity parked(EventDTO event, Car car) {
         System.out.println("Carro estacionou!");
         int spotUnoccupied = spotService.findSpotUnoccupied();
-
+        Event domain = EventMapper.toDomain(event);
+        domain.setEntryTime(LocalDate.now());
         if(spotUnoccupied==0) {
             System.out.println("Carro não entrou da garagem!");
             return ResponseEntity.status(409).build();
 
         }else {
-            Spot spot = spotService.findByLatAndLng(event.lat, event.lng);
+            Spot spot = spotService.findByLatAndLng(event.getLat(), event.getLng());
             spot.setOccupied(true);
             spotService.save(spot);
             registerEventService
                     .save(RegisterEvent
                             .builder()
-                            .eventType(event.eventType)
+                            .event(domain)
                             .car(car)
+
                             .spot(spot)
                             .entryTime(LocalDate.now()).build());
             return ResponseEntity.ok("Evento recebido com sucesso.");

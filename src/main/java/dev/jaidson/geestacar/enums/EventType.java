@@ -1,5 +1,8 @@
 package dev.jaidson.geestacar.enums;
 
 public enum EventType {
- ENTRY, PARKED, EXIT
+ ENTRY("ENTRY"), PARKED("PARKED"), EXIT("EXIT");
+
+ EventType(String entry) {
+ }
 }

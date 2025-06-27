@@ -1,5 +1,8 @@
 package dev.jaidson.geestacar.enums;
 
 public enum Sector {
-    A,B
+    A("A"),B("B");
+
+    Sector(String b) {
+    }
 }
