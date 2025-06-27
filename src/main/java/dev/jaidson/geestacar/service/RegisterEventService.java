@@ -30,13 +30,9 @@ public class RegisterEventService {
         registerEventRepository.deleteById(id);
     }
 
-    public Optional<RegisterEvent> findRegisterByCarAndExitTimeNull() {
-       return registerEventRepository.findFirstBySpotNotNullAndAndExitTimeIsNull();
 
-    }
-    public List<RegisterEvent> findByLicensePlateAndExitTimeIsNull(String licensePlate) {
+    public Optional<RegisterEvent> findByLicensePlateAndExitTimeIsNull(String licensePlate) {
         return registerEventRepository.findByLicensePlateAndExitTimeIsNull(licensePlate);
-
     }
 
 

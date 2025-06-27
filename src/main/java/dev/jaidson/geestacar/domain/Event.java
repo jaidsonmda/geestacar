@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.List;
 @Builder
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "garage_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
     private Long id;
 
     private String licensePlate;
@@ -28,9 +29,17 @@ public class Event {
 
     private EventType eventType;
     private LocalDate exitTime;
+    private LocalDate parkedTime;
     private Double priceUntilNow;
     private Double lat;
     private Double lng;
-    @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RegisterEvent> eventRegister;
+    @ManyToOne
+    @JoinColumn(name = "spot_id", nullable = true)
+    private Spot spot;
+    @ManyToOne
+    @JoinColumn(name = "car_id", nullable = true)
+    private Car car;
+    @ManyToOne
+    @JoinColumn(name = "register_event_id", nullable = false)
+    private RegisterEvent registerEvent;
 }

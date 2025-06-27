@@ -26,5 +26,5 @@ public class Car {
     private String make;
     private boolean inTheGarage;
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RegisterEvent> eventRegister;
+    private List<Event> event;
 }

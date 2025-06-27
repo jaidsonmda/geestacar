@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "event_register")
@@ -18,17 +20,13 @@ import java.time.LocalDate;
 @Builder
 public class RegisterEvent {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reg_event_seq")
     private Long id;
+    private String licensePlate;
+    private LocalDate exitTime;
 
 
-    @ManyToOne
-    @JoinColumn(name = "car_id", nullable = false)
-    private Car car;
-    @ManyToOne
-    @JoinColumn(name = "spot_id", nullable = true)
-    private Spot spot;
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @OneToMany(mappedBy = "registerEvent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> eventList = new ArrayList<>();
+
 }
