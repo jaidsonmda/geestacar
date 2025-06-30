@@ -1,6 +1,7 @@
 package dev.jaidson.geestacar.service;
 
 import dev.jaidson.geestacar.domain.Garage;
+import dev.jaidson.geestacar.enums.Sector;
 import dev.jaidson.geestacar.repository.GarageRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class GarageService {
     @Transactional
     public void deleteById(Long id) {
         garageRepository.deleteById(id);
+    }
+    public Optional<Garage> findGarageBySector(Sector sector){
+        return garageRepository.findBySector(sector);
+    }
+    public double findBasePriceBySector(Sector sector) {
+       return findGarageBySector(sector).get().getBasePrice();
     }
 }
 

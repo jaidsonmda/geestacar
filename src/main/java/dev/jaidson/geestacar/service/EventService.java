@@ -1,6 +1,8 @@
 package dev.jaidson.geestacar.service;
 
 import dev.jaidson.geestacar.domain.Event;
+import dev.jaidson.geestacar.domain.Spot;
+import dev.jaidson.geestacar.enums.EventType;
 import dev.jaidson.geestacar.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class EventService {
 
     public void deleteById(Long id) {
         eventRepository.deleteById(id);
+    }
+    public List<Event> findBySpotAndEventType(Spot spot, EventType eventType) {
+        return eventRepository.findBySpotAndEventType(spot, eventType);
     }
 
 

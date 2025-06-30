@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,10 @@ public class Spot {
     private Long id;
     private Sector sector;
     private double lat;
+    private Double priceUntilNow=0.0;
+    private String licensePlate;
+    private LocalDate entryTime;
+    private LocalDate timeParked;
     private double lng;
     @NotNull
     private boolean occupied = false;

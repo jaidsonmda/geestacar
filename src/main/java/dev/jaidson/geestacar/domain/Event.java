@@ -37,9 +37,9 @@ public class Event {
     @JoinColumn(name = "spot_id", nullable = true)
     private Spot spot;
     @ManyToOne
-    @JoinColumn(name = "car_id", nullable = true)
+    @JoinColumn(name = "car_id", nullable = false)
     private Car car;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "register_event_id", nullable = false)
     private RegisterEvent registerEvent;
 }

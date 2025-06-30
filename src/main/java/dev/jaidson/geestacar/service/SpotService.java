@@ -1,12 +1,14 @@
 package dev.jaidson.geestacar.service;
 
 import dev.jaidson.geestacar.domain.Spot;
+import dev.jaidson.geestacar.enums.Sector;
 import dev.jaidson.geestacar.repository.SpotRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -26,7 +28,7 @@ public class SpotService {
     public int findSpotOccupied(){
         return spotRepository.countAllByOccupiedTrue();
     }
-    public Spot findByLatAndLng(double lat, double lng) {
+    public Optional<Spot> findByLatAndLng(double lat, double lng) {
         return spotRepository.findSpotByLatAndLng(lat, lng);
     }
     public int countAllSpots() {
@@ -51,6 +53,9 @@ public class SpotService {
         catch (ObjectOptimisticLockingFailureException e) {
             System.out.println(e.getMessage());
         }
+    }
+    public List<Spot> findAllBySector(Sector sector, LocalDate date) {
+        return spotRepository.findAllBySectorAndTimeParked(sector, date);
     }
     public void deleteById(Long id) {
         spotRepository.deleteById(id);
