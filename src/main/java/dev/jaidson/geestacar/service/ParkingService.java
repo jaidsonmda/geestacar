@@ -30,6 +30,7 @@ public class ParkingService {
     @Autowired
     private GarageService garageService;
 
+
     public ResponseEntity entry(EventDTO eventDTO, Car car) {
         int spotUnoccupied = spotService.findSpotUnoccupied();
 
@@ -90,6 +91,7 @@ public class ParkingService {
     }
     
     private void updateEntitiesForParked(RegisterEvent registerEvent, EventDTO eventDTO, Car car) {
+
         Optional<Spot> spot = spotService.findByLatAndLng(eventDTO.getLat(), eventDTO.getLng());
         spot.get().setOccupied(true);
         spot.get().setEntryTime(registerEvent.getEventList().get(0).getEntryTime());

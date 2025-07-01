@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public class ParkingController {
                     @ApiResponse(responseCode = "404", description = "Placa não encontrada")
             }
     )
-    public ResponseEntity<CarDTO> plateStatus(@RequestBody FilterPlateStatus plateStatus) {
+    public ResponseEntity<CarDTO> plateStatus(@org.springframework.web.bind.annotation.RequestBody FilterPlateStatus plateStatus) {
         Optional<Car> car = carService.findByLicensePlate(plateStatus.getLicensePlate());
         if (car.isPresent()) {
             return ResponseEntity.ok(CarMapper.carDTO(car.get()));
@@ -84,7 +85,7 @@ public class ParkingController {
                     @ApiResponse(responseCode = "404", description = "Vaga não encontrada")
             }
     )
-    public ResponseEntity<SpotOutDTO> spotStatus(@RequestBody FilterSpotStatus spotStatus){
+    public ResponseEntity<SpotOutDTO> spotStatus(@org.springframework.web.bind.annotation.RequestBody FilterSpotStatus spotStatus){
         Optional<Spot> spot = spotService.findByLatAndLng(spotStatus.getLat(), spotStatus.getLng());
         if(spot.isPresent()) {
 
@@ -110,10 +111,11 @@ public class ParkingController {
                     @ApiResponse(responseCode = "404", description = "Setor inválido ou inexistente")
             }
     )
-    public ResponseEntity<RevenueDTO> revevenue(@RequestBody FilterRevenue filterRevenue){
+    public ResponseEntity<RevenueDTO> revenue(@org.springframework.web.bind.annotation.RequestBody FilterRevenue filterRevenue){
         if(filterRevenue.getSector()== A || filterRevenue.getSector() == B) {
             Double priceUntilnow = 0.0;
-            for (Spot spot : spotService.findAllBySector(filterRevenue.getSector(), filterRevenue.getDate())) {
+            List<Spot> listBySector = spotService.findAllBySector(filterRevenue.getSector(), filterRevenue.getDate());
+            for (Spot spot : listBySector) {
                 priceUntilnow = Objects.isNull(spot.getPriceUntilNow()) ? priceUntilnow + priceUntilnow : spot.getPriceUntilNow() + priceUntilnow;
             }
 
