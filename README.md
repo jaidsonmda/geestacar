@@ -41,5 +41,5 @@
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/gestacar.git
+git clone https://github.com/jaidsonmda/gestacar.git
 cd gestacar
